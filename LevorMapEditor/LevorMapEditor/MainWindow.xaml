@@ -5,8 +5,60 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LevorMapEditor"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="MainWindow" Height="720" Width="1280">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem x:Name="menuNew" Header="_New" InputGestureText="Ctrl-N" Click="MenuNewClick"></MenuItem>
+                <MenuItem x:Name="menuOpen" Header="_Open" InputGestureText="Ctrl-O" Click="MenuOpenClick"></MenuItem>
+                <Separator />
+                <MenuItem x:Name="menuSave" Header="_Save" InputGestureText="Ctrl-S" Click="MenuSaveClick"></MenuItem>
+                <MenuItem x:Name="menuSaveAs" Header="_Save As" Click="MenuSaveAsClick"></MenuItem>
+                <Separator />
+                <MenuItem x:Name="menuQuit" Header="_Quit" InputGestureText="Ctrl-Q"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="_Edit">
+                
+            </MenuItem>
+        </Menu>
 
-    </Grid>
+        <ToolBarTray DockPanel.Dock="Top" MinHeight="20">
+            <ToolBar>
+                <Button x:Name="Brush" Click="BrushBtnClick">
+                    <Image Source="/Resources/Brush.png"></Image>
+                </Button>
+                <Button x:Name="Erase" Click="EraseBtnClick">
+                    <Image Source="/Resources/Eraser.png"></Image>
+                </Button>
+                <Button x:Name="Fill" Click="FillBtnClick">
+                    <Image Source="/Resources/Fill.png"></Image>
+                </Button>
+                <Button x:Name="Clear" Click="ClearBtnClick">
+                    <Image Source="/Resources/Clear.png"></Image>
+                </Button>
+            </ToolBar>
+        </ToolBarTray>
+        
+        <TreeView DockPanel.Dock="Left" MinWidth="100">
+            
+        </TreeView>
+
+        <WrapPanel x:Name="PaletteView" DockPanel.Dock="Right" MinWidth="400">
+            <Grid x:Name="PaletteGrid">
+                
+            </Grid>
+        </WrapPanel>
+
+
+        <DockPanel Name="ScrollBars" >
+            <ScrollBar DockPanel.Dock="Bottom" Name="MapScrollHorz" Orientation="Horizontal" Height="6" />
+            <ScrollBar DockPanel.Dock="Right" Name="MapScrollVert" Orientation="Vertical" Width="5" />
+            <Viewbox x:Name="MapViewbox">
+                <Grid x:Name="MapViewGrid">
+                    
+                </Grid>
+            </Viewbox>
+        </DockPanel>
+
+    </DockPanel>
 </Window>
