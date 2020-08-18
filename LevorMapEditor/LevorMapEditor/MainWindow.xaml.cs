@@ -26,18 +26,21 @@ namespace LevorMapEditor
     public partial class MainWindow : Window
     {
         MapView mapView;
+        Image currentBrush;
+        Tool activeTool;
 
         public MainWindow()
         {
             InitializeComponent();
 
+            PaletteView.CreatePalette(ref PaletteViewPanel);
             //WindowState = WindowState.Maximized;
         }
 
         public void MenuNewClick(object sender, RoutedEventArgs e)
         {
             mapView = new MapView(100, 100);
-            MapViewGrid = mapView.GenerateGrid();
+            mapView.StartGrid(ref MapViewGrid);
         }
 
         public void MenuOpenClick(object sender, RoutedEventArgs e)
@@ -49,13 +52,14 @@ namespace LevorMapEditor
             if (openDlg.ShowDialog() == true)
             {
                 string fileExtension = System.IO.Path.GetExtension(openDlg.FileName);
-                if (fileExtension == "xml")
+                if (fileExtension == ".xml")
                 {
                     XMLProcessor.loadFile(openDlg.FileName);
                 }
-                else if (fileExtension == "png")
+                else if (fileExtension == ".png")
                 {
                     Palette.loadFile(openDlg.FileName);
+                    PaletteView.CreatePalette(ref PaletteViewPanel);
                 }
             }
             else
@@ -85,22 +89,31 @@ namespace LevorMapEditor
 
         public void BrushBtnClick(object sender, RoutedEventArgs e)
         {
-            
+            activeTool = Tool.Brush;
+            mapView.SetActiveTool(activeTool);
         }
 
         public void EraseBtnClick(object sender, RoutedEventArgs e)
         {
-            
+            activeTool = Tool.Erase;
+            mapView.SetActiveTool(activeTool);
         }
 
         public void FillBtnClick(object sender, RoutedEventArgs e)
         {
-            
+            activeTool = Tool.Fill;
+            mapView.SetActiveTool(activeTool);
+        }
+
+        public void CollisionBrushBtnClick(object sender, RoutedEventArgs e)
+        {
+            activeTool = Tool.Collision;
+            mapView.SetActiveTool(activeTool);
         }
 
         public void ClearBtnClick(object sender, RoutedEventArgs e)
         {
-            
+            mapView.ClearMap();
         }
 
         private void MapScrollHorz_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)

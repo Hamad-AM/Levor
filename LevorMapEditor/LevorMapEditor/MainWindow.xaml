@@ -27,6 +27,9 @@
                 <Button x:Name="Brush" Click="BrushBtnClick">
                     <Image Source="/Resources/Brush.png"></Image>
                 </Button>
+                <Button x:Name="CollisionBrush" Click="CollisionBrushBtnClick">
+                    <Image Source="/Resources/CollisionBrush.png"></Image>
+                </Button>
                 <Button x:Name="Erase" Click="EraseBtnClick">
                     <Image Source="/Resources/Eraser.png"></Image>
                 </Button>
@@ -39,14 +42,16 @@
             </ToolBar>
         </ToolBarTray>
         
-        <TreeView DockPanel.Dock="Left" MinWidth="100">
-            
-        </TreeView>
+        <StackPanel DockPanel.Dock="Left" MinWidth="150">
+            <Button x:Name="Layer0">Layer 0</Button>
+            <Button x:Name="Layer1">Layer 1</Button>
+            <Button x:Name="Layer2">Layer 2</Button>
+            <Button x:Name="Layer3">Layer 3</Button>
+            <Button x:Name="Layer4">Layer 4</Button>
+        </StackPanel>
 
-        <WrapPanel x:Name="PaletteView" DockPanel.Dock="Right" MinWidth="400">
-            <Grid x:Name="PaletteGrid">
-                
-            </Grid>
+        <WrapPanel x:Name="PaletteViewPanel" DockPanel.Dock="Right" MinWidth="400" Width="100">
+            
         </WrapPanel>
 
 

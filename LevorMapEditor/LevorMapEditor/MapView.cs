@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -9,28 +10,28 @@ namespace LevorMapEditor
 {
     class MapView
     {
-        private ImageDrawing[,] map;
+        private Image[,] map;
         private int zoom;
         private Vector position;
-        private Grid grid;
+        private Tool activeTool;
+        //private Grid grid;
 
         public MapView(int width, int height)
         {
-            map = new ImageDrawing[100, 100];
-            zoom = 100;
+            map = new Image[50, 50];
+            zoom = 50;
             position = new Vector();
             position.x = 0;
             position.y = 0;
 
-            StartGrid();
+            //StartGrid();
         }
 
-        private void StartGrid()
+        public void StartGrid(ref Grid grid)
         {
-            grid = new Grid();
             grid.Width = 500;
             grid.Height = 500;
-            grid.ShowGridLines = true;
+            //grid.ShowGridLines = true;
 
             for (int i = 0; i < zoom - position.y; i++)
             {
@@ -45,23 +46,62 @@ namespace LevorMapEditor
             }
             for (int i = 0; i < zoom; i++)
             {
-                for (int j = 0; i < zoom; i++)
+                for (int j = 0; j < zoom; j++)
                 {
-                    map[i, j] = new ImageDrawing();
-                    map[i, j].Rect = new System.Windows.Rect(0, 0, grid.Width / zoom, grid.Height / zoom);
-                    map[i, j].ImageSource = new BitmapImage(new Uri(@"Resources/GridPlaceHolder.png", UriKind.Relative));
+                    Button btn = new Button();
+
+                    map[i, j] = new Image();
+                    //map[i, j].Rect = new Rect(0, 0, grid.Width / zoom, grid.Height / zoom);
+                    map[i, j].Source = new BitmapImage(new Uri(@"Resources/GridPlaceHolder.png", UriKind.Relative));
+
+                    btn.Content = map[i, j];
+                    btn.Click += new RoutedEventHandler(MapCellClicked);
+                    btn.Style = new Style();
+
+                    Grid.SetRow(btn, j);
+                    Grid.SetColumn(btn, i);
+
+                    grid.Children.Add(btn);
                 }
             }
         }
 
-        public Grid GenerateGrid()
+        private void MapCellClicked(object sender, RoutedEventArgs e)
         {
-            return grid;
+            switch (activeTool)
+            {
+                case Tool.Brush:
+                    Button cell = sender as Button;
+                    int row = (int)cell.GetValue(Grid.RowProperty);
+                    int column = (int)cell.GetValue(Grid.ColumnProperty);
+
+                    map[column, row].Source = Palette.currentBrush.Source;
+                    cell.Content = null;
+                    cell.Content = map[column, row];
+                case Erase:
+
+            }
+
         }
 
-        public Grid UpdateGrid()
+        //public Grid GenerateGrid()
+        //{
+        //    return grid;
+        //}
+
+        //public Grid UpdateGrid()
+        //{
+        //    return grid;
+        //}
+
+        public void SetActiveTool(Tool newTool)
         {
-            return grid;
+            activeTool = newTool;
+        }
+
+        public void ClearMap()
+        {
+
         }
 
         struct Vector

@@ -9,8 +9,11 @@
   <ItemGroup>
     <None Remove="Resources\Brush.png" />
     <None Remove="Resources\Clear.png" />
+    <None Remove="Resources\CollisionBrush.png" />
+    <None Remove="Resources\desktop.ini" />
     <None Remove="Resources\Eraser.png" />
     <None Remove="Resources\Fill.png" />
+    <None Remove="Resources\GrassTile.png" />
     <None Remove="Resources\GridPlaceHolder.png" />
   </ItemGroup>
 
@@ -21,10 +24,19 @@
     <Resource Include="Resources\Clear.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\CollisionBrush.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\desktop.ini">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\Eraser.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Fill.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\GrassTile.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\GridPlaceHolder.png">
