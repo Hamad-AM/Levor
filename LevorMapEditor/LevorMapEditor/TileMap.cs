@@ -3,30 +3,38 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Documents;
+using System.Xml.Serialization;
 
 namespace LevorMapEditor
 {
-    struct TileMap
+    [Serializable]
+    [XmlRoot(ElementName = "map")]
+    public class TileMap
     {
 
         public string mapName;
+        [XmlArray]
         public List<Tile> tileSet;
+        [XmlArray]
         public List<Layer> layers;
-        public bool[,] collisionMap;
-
+        [XmlArray]
+        public List<List<bool>> collisionMap;
         public int width;
         public int height;
     }
 
-
-    struct Layer
+    [Serializable]
+    [XmlRoot(ElementName = "layer")]
+    public class Layer
     {
         public int id;
         public string name;
-        public string[,] data;
+        public List<List<string>> data;
     }
 
-    struct Tile
+    [Serializable]
+    [XmlRoot(ElementName = "tile")]
+    public class Tile
     {
         public string fileName;
         public int id;

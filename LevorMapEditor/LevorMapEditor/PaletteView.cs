@@ -21,7 +21,7 @@ namespace LevorMapEditor
                 ImageBrush img = new ImageBrush();
                 img.ImageSource = Palette.palette[i];
 
-                RenderOptions.SetBitmapScalingMode(img, BitmapScalingMode.NearestNeighbor);
+                RenderOptions.SetBitmapScalingMode(img.ImageSource, BitmapScalingMode.NearestNeighbor);
 
                 pltPicker.Background = img;
                 pltPicker.Click += new RoutedEventHandler(ChooseTile);

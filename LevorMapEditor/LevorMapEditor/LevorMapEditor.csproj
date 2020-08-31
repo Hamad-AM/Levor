@@ -16,6 +16,7 @@
     <None Remove="Resources\GrassTile.png" />
     <None Remove="Resources\GridPlaceHolder.png" />
     <None Remove="Resources\TestOverlay.png" />
+    <None Remove="Resources\WoodText.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -45,6 +46,9 @@
     </Resource>
     <Resource Include="Resources\TestOverlay.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WoodText.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
 

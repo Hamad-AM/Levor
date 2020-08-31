@@ -62,7 +62,10 @@ namespace LevorMapEditor
             int height = 25;
 
             project.NewMap("UntitledMap", 25, 25);
-            
+
+            imageMap = new List<BitmapImage[,]>();
+            tileIds = new List<string[,]>();
+
             ItemCollection items = LayersListBox.Items;
             for (int i = 0; i < items.Count; i++)
             {
@@ -120,7 +123,6 @@ namespace LevorMapEditor
             {
                 Debug.WriteLine("ERROR : Could not open file ");
             }
-
         }
 
         public void MenuSaveClick(object sender, RoutedEventArgs e)
@@ -173,7 +175,7 @@ namespace LevorMapEditor
 
         private void OnMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            UpdateViewBox((e.Delta > 0) ? 5 : -5);
+            UpdateViewBox((e.Delta > 0) ? 10 : -10);
         }
 
         private void UpdateViewBox(int newValue)
@@ -202,6 +204,19 @@ namespace LevorMapEditor
         }
 
         private void UpdateViewLayer()
+        {
+            for (int i = 0; i < MapViewGrid.Children.Count; i++)
+            {
+                int col = (int)MapViewGrid.Children[i].GetValue(Grid.ColumnProperty);
+                int row = (int)MapViewGrid.Children[i].GetValue(Grid.RowProperty);
+                if (tileIds[currentLayer][col, row] != "0")
+                {
+                    ((ImageBrush)(MapViewGrid.Children[i] as Button).Background).ImageSource = imageMap[currentLayer][col, row];
+                }
+            }
+        }
+
+        private void UpdateViewCollision()
         {
 
         }
@@ -303,8 +318,10 @@ namespace LevorMapEditor
                     else
                     {
                         collisionMap[column, row] = true;
-                        cell.BorderThickness = new Thickness(2);
+                        cell.BorderThickness = new Thickness(0.5);
                     }
+                    UpdateViewCollision();
+
                     project.setMapColMap(collisionMap);
                     break;
             }
