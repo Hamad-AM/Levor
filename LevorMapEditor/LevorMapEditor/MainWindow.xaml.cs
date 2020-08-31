@@ -111,6 +111,7 @@ namespace LevorMapEditor
                 if (fileExtension == ".xml")
                 {
                     project.LoadMap(openDlg.FileName);
+                    UpdateView();
                 }
                 else if (fileExtension == ".png")
                 {
@@ -203,22 +204,132 @@ namespace LevorMapEditor
             UpdateViewLayer();
         }
 
-        private void UpdateViewLayer()
+        private void UpdateView()
         {
-            for (int i = 0; i < MapViewGrid.Children.Count; i++)
+            TileMap map = project.GetTileMap();
+
+            mapWidth = map.width;
+            mapHeight = map.height;
+
+            // update and load the palette from the TileSet in xml
+            // starts from one to ignore empty tile
+
+            Palette.palette = new List<BitmapImage>();
+            Palette.palette.Add(new BitmapImage(new Uri(@"Resources/GridPlaceHolder.png", UriKind.Relative)));
+            for (int i = 1; i < map.tileSet.Count; i++)
             {
-                int col = (int)MapViewGrid.Children[i].GetValue(Grid.ColumnProperty);
-                int row = (int)MapViewGrid.Children[i].GetValue(Grid.RowProperty);
-                if (tileIds[currentLayer][col, row] != "0")
+                // clear palette
+                Palette.loadFile(map.tileSet[i].fileName);
+                PaletteView.CreatePalette(ref PaletteViewPanel);
+            }
+
+            List<Layer> layers = map.layers;
+
+            imageMap = new List<BitmapImage[,]>();
+            tileIds = new List<string[,]>();
+
+
+            // update and load bitmap images from xml for all layers
+            // update and load TileIds from xml for all layers
+            for (int layerIndex = 0; layerIndex < layers.Count; layerIndex++)
+            {
+                Layer currentLayer = layers[layerIndex];
+
+                imageMap.Add(new BitmapImage[map.width, map.height]);
+                tileIds.Add(new string[map.width, map.height]);
+
+                if (currentLayer.data.Count == 0)
                 {
-                    ((ImageBrush)(MapViewGrid.Children[i] as Button).Background).ImageSource = imageMap[currentLayer][col, row];
+                    currentLayer.data = HamadLib.ArrayToList<string>(HamadLib.Populate<string>(new string[mapWidth, mapHeight], "0"));
+                }
+
+                for (int col = 0; col < map.width; col++)
+                {
+                    for (int row = 0; row < map.height; row++)
+                    {
+                        int currentTileIndex = Int32.Parse(currentLayer.data[col][row]);
+
+                        tileIds[layerIndex][col, row] = currentTileIndex.ToString();
+
+                        imageMap[layerIndex][col, row] = Palette.palette[currentTileIndex].Clone();
+                    }
                 }
             }
+
+
+            collisionMap = new bool[map.width, map.height];
+
+            if (map.collisionMap.Count == 0)
+            {
+                collisionMap = HamadLib.Populate<bool>(collisionMap, false);
+            }
+            else
+            {
+                for (int col = 0; col < map.width; col++)
+                {
+                    for (int row = 0; row < map.height; row++)
+                    {
+                        collisionMap[col, row] = map.collisionMap[col][row];
+                    }
+                }
+
+            }
+            // update and load the collision map
+
+            UpdateViewLayer();
+        }
+        
+        
+
+        private void UpdateViewLayer()
+        {
+
+            MapViewGrid.Width = 16;
+            MapViewGrid.Height = 16;
+
+            for (int i = 0; i < mapWidth; i++)
+            {
+                ColumnDefinition coldef = new ColumnDefinition();
+                MapViewGrid.ColumnDefinitions.Add(coldef);
+            }
+
+            for (int i = 0; i < mapHeight; i++)
+            {
+                RowDefinition rowdef = new RowDefinition();
+                MapViewGrid.RowDefinitions.Add(rowdef);
+            }
+
+            // update MapViewGrid with the current selected layer
+            for (int i = 0; i < mapWidth; i++)
+            {
+                for (int j = 0; j < mapHeight; j++)
+                {
+                    Button btn = new Button();
+
+                    //btn.Content = imageMap[i, j];
+                    ImageBrush img = new ImageBrush();
+                    img.ImageSource = imageMap[currentLayer][i, j];
+
+                    btn.Background = img;
+
+                    btn.Click += new RoutedEventHandler(MapCellClicked);
+                    btn.BorderThickness = new Thickness();
+
+                    Grid.SetRow(btn, j);
+                    Grid.SetColumn(btn, i);
+
+                    MapViewGrid.Children.Add(btn);
+
+                    //TileMap.AddTile(new Tile() { });
+                }
+            }
+
+            Debug.WriteLine(MapViewGrid.ToString());
         }
 
         private void UpdateViewCollision()
         {
-
+            // update to show collision when collision tool is selected
         }
 
         private void StartGrid()

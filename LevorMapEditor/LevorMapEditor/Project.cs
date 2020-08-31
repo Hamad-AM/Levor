@@ -31,6 +31,13 @@ namespace LevorMapEditor
             stream.Close();
         }
 
+
+        public TileMap GetTileMap()
+        {
+            return map;
+        }
+
+
         public void LoadTile(string filePath)
         {
 
@@ -41,7 +48,7 @@ namespace LevorMapEditor
             map.tileSet.Add(new Tile() { id = inId, fileName = inFilePath });
         }
 
-        public void setFilePath(string fileName)
+        public void SetFilePath(string fileName)
         {
             mapFilePath = @"C:\Users\Hamad\Documents\Projects\Games\PixelRPG\MonoRPG_TiledProject\" + fileName + ".xml";
         }
@@ -211,23 +218,23 @@ namespace LevorMapEditor
             {
                 id = 0,
                 name = "Background",
-                data = new List<List<string>>()
+                data = HamadLib.ArrayToList<string>(HamadLib.Populate<string>(new string[inWidth,inHeight], "0"))
             }); ;
             map.layers.Add(new Layer()
             {
                 id = 1,
                 name = "Foreground",
-                data = new List<List<string>>()
+                data = HamadLib.ArrayToList<string>(HamadLib.Populate<string>(new string[inWidth, inHeight], "0"))
             });
-            map.collisionMap = new List<List<bool>>();
+            map.collisionMap = HamadLib.ArrayToList<bool>(HamadLib.Populate<bool>(new bool[inWidth, inHeight], false));
             map.tileSet = new List<Tile>();
 
-            mapFilePath += mapName + ".xml";
+            SetFilePath(mapName);
         }
 
         public void setMapData(string[,] inData, int layerId)
         {
-            List<List<string>> inDataList = ArrayToList<string>(inData);
+            List<List<string>> inDataList = HamadLib.ArrayToList<string>(inData);
 
             map.layers[layerId] = new Layer() {
                 id = layerId,
@@ -236,33 +243,10 @@ namespace LevorMapEditor
             };
         }
 
-        private List<List<T>> ArrayToList<T>(T[,] inData)
-        {
-            List<List<T>> outList = new List<List<T>>();
-
-            //for (int i = 0; i < inData.GetLength(0); i++)
-            //{
-            //    outList.Add(new List<T>());
-            //    for (int j = 0; j < inData.GetLength(1); j++)
-            //    {
-            //        outList[i].Add(null);
-            //    }
-            //}
-
-            for (int i = 0; i < inData.GetLength(0); i++)
-            {
-                outList.Add(new List<T>());
-                for (int j = 0; j < inData.GetLength(1); j++)
-                {
-                    outList[i].Add(inData[i, j]);
-                }
-            }
-            return outList;
-        }
 
         public void setMapColMap(bool[,] inColMap)
         {
-            map.collisionMap = ArrayToList<bool>(inColMap);
+            map.collisionMap = HamadLib.ArrayToList<bool>(inColMap);
         }
 
         public void RemoveLayer()
