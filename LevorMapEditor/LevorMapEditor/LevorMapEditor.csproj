@@ -15,6 +15,7 @@
     <None Remove="Resources\Fill.png" />
     <None Remove="Resources\GrassTile.png" />
     <None Remove="Resources\GridPlaceHolder.png" />
+    <None Remove="Resources\TestOverlay.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,6 +41,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\GridPlaceHolder.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\TestOverlay.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

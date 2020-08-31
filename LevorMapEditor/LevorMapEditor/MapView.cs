@@ -10,77 +10,122 @@ namespace LevorMapEditor
 {
     class MapView
     {
-        private Image[,] map;
-        private int zoom;
-        private Vector position;
+        private BitmapImage[,] imageMap;
+        private bool[,] collisionMap;
         private Tool activeTool;
-        //private Grid grid;
+        private bool eraseModifier = false;
+        private int mapWidth;
+        private int mapHeight;
+        private int currentLayer;
+
 
         public MapView(int width, int height)
         {
-            map = new Image[50, 50];
-            zoom = 50;
-            position = new Vector();
-            position.x = 0;
-            position.y = 0;
+            imageMap = new BitmapImage[width, height];
+            collisionMap = new bool[width, height];
+
+            mapWidth = width;
+            mapHeight = height;
+
+            currentLayer = 0;
 
             //StartGrid();
         }
 
         public void StartGrid(ref Grid grid)
         {
-            grid.Width = 500;
-            grid.Height = 500;
+            grid.Width = 16;
+            grid.Height = 16;
             //grid.ShowGridLines = true;
 
-            for (int i = 0; i < zoom - position.y; i++)
+            for (int i = 0; i <  mapWidth; i++)
             {
                 ColumnDefinition coldef = new ColumnDefinition();
                 grid.ColumnDefinitions.Add(coldef);
             }
 
-            for (int i = 0; i < zoom - position.x; i++)
+            for (int i = 0; i < mapHeight; i++)
             {
                 RowDefinition rowdef = new RowDefinition();
                 grid.RowDefinitions.Add(rowdef);
             }
-            for (int i = 0; i < zoom; i++)
+            for (int i = 0; i < mapWidth; i++)
             {
-                for (int j = 0; j < zoom; j++)
+                for (int j = 0; j < mapHeight; j++)
                 {
                     Button btn = new Button();
-
-                    map[i, j] = new Image();
                     //map[i, j].Rect = new Rect(0, 0, grid.Width / zoom, grid.Height / zoom);
-                    map[i, j].Source = new BitmapImage(new Uri(@"Resources/GridPlaceHolder.png", UriKind.Relative));
+                    imageMap[i, j] = new BitmapImage(new Uri(@"Resources/GridPlaceHolder.png", UriKind.Relative));
+                    RenderOptions.SetBitmapScalingMode(imageMap[i, j], BitmapScalingMode.NearestNeighbor);
+                    //RenderOptions.BitmapScalingModeProperty = "NearestNeighbor";
 
-                    btn.Content = map[i, j];
+                    //btn.Content = imageMap[i, j];
+                    ImageBrush img = new ImageBrush();
+                    img.ImageSource = imageMap[i, j];
+
+
+                    RenderOptions.SetBitmapScalingMode(img, BitmapScalingMode.NearestNeighbor);
+
+                    btn.Background = img;
+
                     btn.Click += new RoutedEventHandler(MapCellClicked);
-                    btn.Style = new Style();
+                    btn.BorderThickness = new Thickness();
 
                     Grid.SetRow(btn, j);
                     Grid.SetColumn(btn, i);
 
                     grid.Children.Add(btn);
+
+                    collisionMap[i, j] = false;
+
+                    //TileMap.AddTile(new Tile() { });
                 }
             }
         }
 
         private void MapCellClicked(object sender, RoutedEventArgs e)
         {
+
+            Button cell = sender as Button;
+            int row = (int)cell.GetValue(Grid.RowProperty);
+            int column = (int)cell.GetValue(Grid.ColumnProperty);
+
             switch (activeTool)
             {
                 case Tool.Brush:
-                    Button cell = sender as Button;
-                    int row = (int)cell.GetValue(Grid.RowProperty);
-                    int column = (int)cell.GetValue(Grid.ColumnProperty);
+                    if (eraseModifier == true)
+                        imageMap[column, row] = Palette.palette[0];
+                    else
+                        imageMap[column, row] = Palette.currentBrush;
+                    ImageBrush img = new ImageBrush();
+                    img.ImageSource = imageMap[column, row];
+                    img.Stretch = Stretch.UniformToFill;
+                    RenderOptions.SetBitmapScalingMode(img, BitmapScalingMode.NearestNeighbor);
+                    cell.Background = img;
+                    break;
 
-                    map[column, row].Source = Palette.currentBrush.Source;
-                    cell.Content = null;
-                    cell.Content = map[column, row];
-                case Erase:
-
+                case Tool.Collision:
+                    if (eraseModifier == true)
+                    {
+                        collisionMap[column, row] = false;
+                        cell.BorderThickness = new Thickness();
+                    }
+                    else
+                    {
+                        collisionMap[column, row] = true;
+                        cell.BorderThickness = new Thickness(2);
+                    }
+                    break;
             }
+        }
+
+        public void ScrollHorz_ValueChanged(RoutedPropertyChangedEventArgs<double> e)
+        {
+
+        }
+
+        public void ScrollVert_ValueChanged(RoutedPropertyChangedEventArgs<double> e)
+        {
 
         }
 
@@ -99,15 +144,31 @@ namespace LevorMapEditor
             activeTool = newTool;
         }
 
+        public void SelectErase()
+        {
+            eraseModifier = !eraseModifier;
+        }
+
         public void ClearMap()
         {
 
         }
 
-        struct Vector
+        public void ChangeLayer(int newLayer)
         {
-            public int x;
-            public int y;
+            currentLayer = newLayer;
+        }
+    }
+
+    struct EVector
+    {
+        public int x;
+        public int y;
+
+        public EVector(int inX, int inY)
+        {
+            x = inX;
+            y = inY;
         }
     }
 }

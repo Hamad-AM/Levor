@@ -8,7 +8,6 @@ namespace LevorMapEditor
     {
         Brush,
         Collision,
-        Fill,
-        Erase
+        Fill
     }
 }

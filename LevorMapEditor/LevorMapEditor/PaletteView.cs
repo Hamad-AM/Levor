@@ -4,6 +4,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace LevorMapEditor
 {
@@ -17,10 +18,12 @@ namespace LevorMapEditor
             {
                 Button pltPicker = new Button();
 
-                Image img = new Image();
-                img.Source = Palette.palette[i];
+                ImageBrush img = new ImageBrush();
+                img.ImageSource = Palette.palette[i];
 
-                pltPicker.Content = img;
+                RenderOptions.SetBitmapScalingMode(img, BitmapScalingMode.NearestNeighbor);
+
+                pltPicker.Background = img;
                 pltPicker.Click += new RoutedEventHandler(ChooseTile);
                 pltPicker.Width = 50;
                 pltPicker.Height = 50;
@@ -32,8 +35,8 @@ namespace LevorMapEditor
         private static void ChooseTile(object sender, RoutedEventArgs e)
         {
             Button btn = sender as Button;
-            Image img = (Image)btn.Content;
-            Palette.currentBrush.Source = img.Source;
+            ImageBrush img = (ImageBrush)btn.Background;
+            Palette.currentBrush = (BitmapImage)img.ImageSource;
         }
 
         public static void AddToPalette(ref WrapPanel panel)

@@ -9,8 +9,9 @@ namespace LevorMapEditor
 {
     class Palette
     {
-        public static List<BitmapImage> palette = new List<BitmapImage>();
-        public static Image currentBrush = new Image();
+        public static List<BitmapImage> palette = new List<BitmapImage>() { new BitmapImage(new Uri(@"Resources/GridPlaceHolder.png", UriKind.Relative)), new BitmapImage(new Uri(@"Resources/GrassTile.png", UriKind.Relative)) };
+        public static BitmapImage currentBrush = new BitmapImage(new Uri(@"Resources/GridPlaceHolder.png", UriKind.Relative));
+        public static BitmapImage placeHolder = new BitmapImage(new Uri(@"Resources/GridPlaceHolder.png", UriKind.Relative));
 
         public static void loadFile(string fileName)
         {

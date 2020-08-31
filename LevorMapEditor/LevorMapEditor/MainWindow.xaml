@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:LevorMapEditor"
         mc:Ignorable="d"
         Title="MainWindow" Height="720" Width="1280">
+        
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
@@ -30,24 +31,27 @@
                 <Button x:Name="CollisionBrush" Click="CollisionBrushBtnClick">
                     <Image Source="/Resources/CollisionBrush.png"></Image>
                 </Button>
-                <Button x:Name="Erase" Click="EraseBtnClick">
-                    <Image Source="/Resources/Eraser.png"></Image>
-                </Button>
                 <Button x:Name="Fill" Click="FillBtnClick">
                     <Image Source="/Resources/Fill.png"></Image>
                 </Button>
                 <Button x:Name="Clear" Click="ClearBtnClick">
                     <Image Source="/Resources/Clear.png"></Image>
                 </Button>
+                <Separator />
+                <CheckBox x:Name="EraseModifier" Click="EraseBtnClick" VerticalAlignment="Center" IsChecked="False">Erase</CheckBox>
             </ToolBar>
         </ToolBarTray>
         
         <StackPanel DockPanel.Dock="Left" MinWidth="150">
-            <Button x:Name="Layer0">Layer 0</Button>
-            <Button x:Name="Layer1">Layer 1</Button>
-            <Button x:Name="Layer2">Layer 2</Button>
-            <Button x:Name="Layer3">Layer 3</Button>
-            <Button x:Name="Layer4">Layer 4</Button>
+            <ListBox SelectionChanged="LayerSelected" x:Name="LayersListBox" SelectionMode="Single">
+                <ListBoxItem>Background</ListBoxItem>
+                <ListBoxItem>Foreground</ListBoxItem>
+            </ListBox>
+            <StackPanel Orientation="Horizontal">
+                <TextBox MinWidth="75" x:Name="newLayerNameTB"></TextBox>
+                <Button x:Name="addLayerBtn" Click="AddNewLayer">Add New Layer</Button>
+            </StackPanel>
+            <Button Click="RemoveSelectedLayer">Remove Selected Layer</Button>
         </StackPanel>
 
         <WrapPanel x:Name="PaletteViewPanel" DockPanel.Dock="Right" MinWidth="400" Width="100">
@@ -56,13 +60,13 @@
 
 
         <DockPanel Name="ScrollBars" >
-            <ScrollBar DockPanel.Dock="Bottom" Name="MapScrollHorz" Orientation="Horizontal" Height="6" />
-            <ScrollBar DockPanel.Dock="Right" Name="MapScrollVert" Orientation="Vertical" Width="5" />
-            <Viewbox x:Name="MapViewbox">
-                <Grid x:Name="MapViewGrid">
-                    
-                </Grid>
-            </Viewbox>
+            <ScrollViewer x:Name="MapScrollView" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
+                <Viewbox x:Name="MapViewbox" MouseWheel="OnMouseWheel">
+                    <Grid x:Name="MapViewGrid">
+
+                    </Grid>
+                </Viewbox>
+            </ScrollViewer>
         </DockPanel>
 
     </DockPanel>
