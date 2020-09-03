@@ -57,11 +57,15 @@ namespace LevorMapEditor
              * Open dialog to input name for map and dimensions
              */
 
-            // Temporary width and height
-            int width = 25;
-            int height = 25;
+            NewMapDialog newDialog = new NewMapDialog();
 
-            project.NewMap("UntitledMap", 25, 25);
+            newDialog.ShowDialog();
+
+            // Temporary width and height
+            int width = newDialog.InputMapWidth;
+            int height = newDialog.InputMapHeight;
+
+            project.NewMap(newDialog.InputMapName, width, height);
 
             imageMap = new List<BitmapImage[,]>();
             tileIds = new List<string[,]>();
@@ -78,6 +82,8 @@ namespace LevorMapEditor
             mapHeight = height;
 
             currentLayer = 0;
+
+            newDialog.Close();
 
             StartGrid();
             InitializeMap();
@@ -283,9 +289,7 @@ namespace LevorMapEditor
 
         private void UpdateViewLayer()
         {
-
-            MapViewGrid.Width = 16;
-            MapViewGrid.Height = 16;
+            MapViewGrid.Children.Clear();
 
             for (int i = 0; i < mapWidth; i++)
             {
@@ -307,10 +311,14 @@ namespace LevorMapEditor
                     Button btn = new Button();
 
                     //btn.Content = imageMap[i, j];
+
                     ImageBrush img = new ImageBrush();
                     img.ImageSource = imageMap[currentLayer][i, j];
-
+                    img.Stretch = Stretch.UniformToFill;
+                    RenderOptions.SetBitmapScalingMode(img, BitmapScalingMode.NearestNeighbor);
                     btn.Background = img;
+
+
 
                     btn.Click += new RoutedEventHandler(MapCellClicked);
                     btn.BorderThickness = new Thickness();
@@ -323,8 +331,6 @@ namespace LevorMapEditor
                     //TileMap.AddTile(new Tile() { });
                 }
             }
-
-            Debug.WriteLine(MapViewGrid.ToString());
         }
 
         private void UpdateViewCollision()
@@ -334,8 +340,6 @@ namespace LevorMapEditor
 
         private void StartGrid()
         {
-            MapViewGrid.Width = 16;
-            MapViewGrid.Height = 16;
             //grid.ShowGridLines = true;
 
             for (int i = 0; i < mapWidth; i++)
@@ -407,8 +411,9 @@ namespace LevorMapEditor
                         imageMap[currentLayer][column, row] = Palette.palette[0];
                     else
                         imageMap[currentLayer][column, row] = Palette.currentBrush;
-                    
+
                     // Set Cell to brushes image element
+                    cell.Background = null;
                     ImageBrush img = new ImageBrush();
                     img.ImageSource = imageMap[currentLayer][column, row];
                     img.Stretch = Stretch.UniformToFill;
