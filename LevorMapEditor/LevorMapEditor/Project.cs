@@ -9,6 +9,7 @@ using System.Windows;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using RPGXmlData;
 
 namespace LevorMapEditor
 {
@@ -113,16 +114,26 @@ namespace LevorMapEditor
 
         private void MapDeserialize(Stream stream)
         {
-            XmlSerializer reader = new XmlSerializer(typeof(TileMap));
-            map = (TileMap)reader.Deserialize(stream);
-            stream.Close();
+            //XmlSerializer reader = new XmlSerializer(typeof(TileMap));
+            //map = (TileMap)reader.Deserialize(stream);
+            //stream.Close();
+
+
+            // using monogame content xmlserializer
+            XmlWriterSettings settings = new XmlWriterSettings();
+            using XmlReader reader = XmlReader.Create(stream);
+            map = Microsoft.Xna.Framework.Content.Pipeline.Serialization.Intermediate.IntermediateSerializer.Deserialize<TileMap>(reader, null);
         }
 
         private void MapSerialize(Stream stream)
         {
-            XmlSerializer writer = new XmlSerializer(typeof(TileMap));
-            writer.Serialize(stream, map);
-            stream.Close();
+            //XmlSerializer writer = new XmlSerializer(typeof(TileMap));
+            //writer.Serialize(stream, map);
+            XmlWriterSettings settings = new XmlWriterSettings();
+
+            using XmlWriter writer = XmlWriter.Create(stream, settings);
+
+            Microsoft.Xna.Framework.Content.Pipeline.Serialization.Intermediate.IntermediateSerializer.Serialize<TileMap>(writer, map, null);
         }
 
         private void MapWriter(Stream stream)
@@ -218,13 +229,13 @@ namespace LevorMapEditor
             {
                 id = 0,
                 name = "Background",
-                data = HamadLib.ArrayToList<string>(HamadLib.Populate<string>(new string[inWidth,inHeight], "0"))
-            }); ;
+                data = HamadLib.ArrayToList<int>(HamadLib.Populate<int>(new int[inWidth,inHeight], 0))
+            });
             map.layers.Add(new Layer()
             {
                 id = 1,
                 name = "Foreground",
-                data = HamadLib.ArrayToList<string>(HamadLib.Populate<string>(new string[inWidth, inHeight], "0"))
+                data = HamadLib.ArrayToList<int>(HamadLib.Populate<int>(new int[inWidth, inHeight], 0))
             });
             map.collisionMap = HamadLib.ArrayToList<bool>(HamadLib.Populate<bool>(new bool[inWidth, inHeight], false));
             map.tileSet = new List<Tile>();
@@ -232,9 +243,9 @@ namespace LevorMapEditor
             SetFilePath(mapName);
         }
 
-        public void setMapData(string[,] inData, int layerId)
+        public void setMapData(int[,] inData, int layerId)
         {
-            List<List<string>> inDataList = HamadLib.ArrayToList<string>(inData);
+            List<List<int>> inDataList = HamadLib.ArrayToList<int>(inData);
 
             map.layers[layerId] = new Layer() {
                 id = layerId,

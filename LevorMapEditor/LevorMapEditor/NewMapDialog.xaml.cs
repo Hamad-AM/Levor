@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using RPGXmlData;
 
 namespace LevorMapEditor
 {
@@ -49,6 +50,7 @@ namespace LevorMapEditor
             {
                 Console.WriteLine("Invalid Input");
             }
+            this.Close();
         }
 
         private void OnCancelClick(object sender, RoutedEventArgs e)

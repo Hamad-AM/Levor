@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
+using RPGXmlData;
 
 namespace LevorMapEditor
 {
@@ -27,7 +28,7 @@ namespace LevorMapEditor
     {   
         Project project;
         List<BitmapImage[,]> imageMap;
-        List<string[,]> tileIds;
+        List<int[,]> tileIds;
 
         Tool activeTool;
         int currentLayer;
@@ -68,13 +69,13 @@ namespace LevorMapEditor
             project.NewMap(newDialog.InputMapName, width, height);
 
             imageMap = new List<BitmapImage[,]>();
-            tileIds = new List<string[,]>();
+            tileIds = new List<int[,]>();
 
             ItemCollection items = LayersListBox.Items;
             for (int i = 0; i < items.Count; i++)
             {
                 imageMap.Add(new BitmapImage[width, height]);
-                tileIds.Add(new string[width, height]);
+                tileIds.Add(new int[width, height]);
             }
             collisionMap = new bool[width, height];
 
@@ -91,13 +92,13 @@ namespace LevorMapEditor
 
         private void InitializeMap()
         {
-            foreach (string[,] layer in tileIds)
+            foreach (int[,] layer in tileIds)
             {
                 for (int i = 0; i < mapWidth; i++)
                 {
                     for (int j = 0; j < mapHeight; j++)
                     {
-                        layer[i, j] = "0";
+                        layer[i, j] = 0;
                     }
                 }
             }
@@ -232,7 +233,7 @@ namespace LevorMapEditor
             List<Layer> layers = map.layers;
 
             imageMap = new List<BitmapImage[,]>();
-            tileIds = new List<string[,]>();
+            tileIds = new List<int[,]>();
 
 
             // update and load bitmap images from xml for all layers
@@ -242,20 +243,20 @@ namespace LevorMapEditor
                 Layer currentLayer = layers[layerIndex];
 
                 imageMap.Add(new BitmapImage[map.width, map.height]);
-                tileIds.Add(new string[map.width, map.height]);
+                tileIds.Add(new int[map.width, map.height]);
 
                 if (currentLayer.data.Count == 0)
                 {
-                    currentLayer.data = HamadLib.ArrayToList<string>(HamadLib.Populate<string>(new string[mapWidth, mapHeight], "0"));
+                    currentLayer.data = HamadLib.ArrayToList<int>(HamadLib.Populate<int>(new int[mapWidth, mapHeight], 0));
                 }
 
                 for (int col = 0; col < map.width; col++)
                 {
                     for (int row = 0; row < map.height; row++)
                     {
-                        int currentTileIndex = Int32.Parse(currentLayer.data[col][row]);
+                        int currentTileIndex = currentLayer.data[col][row];
 
-                        tileIds[layerIndex][col, row] = currentTileIndex.ToString();
+                        tileIds[layerIndex][col, row] = currentTileIndex;
 
                         imageMap[layerIndex][col, row] = Palette.palette[currentTileIndex].Clone();
                     }
@@ -421,7 +422,7 @@ namespace LevorMapEditor
                     cell.Background = img;
                     
                     // Add brush id to map of tile ids
-                    tileIds[currentLayer][column, row] = Palette.palette.IndexOf(Palette.currentBrush).ToString();
+                    tileIds[currentLayer][column, row] = Palette.palette.IndexOf(Palette.currentBrush);
 
                     break;
 
