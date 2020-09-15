@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Games\PixelRPG\MonoRPG\RPGXmlData\RPGXmlData.csproj" />
+    <ProjectReference Include="..\..\..\..\Games\PixelRPG\MonoRPG\DataType\DataType.csproj" />
   </ItemGroup>
 
   <ItemGroup>

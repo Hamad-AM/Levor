@@ -9,7 +9,7 @@ using System.Windows;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
-using RPGXmlData;
+using DataType;
 
 namespace LevorMapEditor
 {
